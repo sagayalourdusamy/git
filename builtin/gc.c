@@ -232,7 +232,7 @@ static int need_to_gc(void)
 static const char *lock_repo_for_gc(int force, pid_t* ret_pid)
 {
 	static struct lock_file lock;
-	char my_host[128];
+	char my_host[HOST_NAME_MAX + 1];
 	struct strbuf sb = STRBUF_INIT;
 	struct stat st;
 	uintmax_t pid;
@@ -244,7 +244,7 @@ static const char *lock_repo_for_gc(int force, pid_t* ret_pid)
 		/* already locked */
 		return NULL;
 
-	if (gethostname(my_host, sizeof(my_host)))
+	if (xgethostname(my_host, sizeof(my_host)))
 		xsnprintf(my_host, sizeof(my_host), "unknown");
 
 	pidfile_path = git_pathdup("gc.pid");
